@@ -1,0 +1,164 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FrameLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ViewFlipper
+        android:id="@+id/agreementsFlipper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="350dp"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:id="@+id/scrollView1"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="300dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:text="@string/about_app" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <CheckBox
+                android:id="@+id/check_box_aboutApp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/agreeToTerms" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="350dp"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:id="@+id/ScrollView01"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/TextView01"
+                        android:layout_width="300dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:text="@string/why_its_free" />
+                </LinearLayout>
+            </ScrollView>
+
+            <CheckBox
+                android:id="@+id/check_box_why_its_free"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/agreeToTerms" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="350dp"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:id="@+id/ScrollView02"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/TextView02"
+                        android:layout_width="300dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:text="@string/How_this_all_works" />
+                </LinearLayout>
+            </ScrollView>
+
+            <CheckBox
+                android:id="@+id/check_box_how_this_works"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/agreeToTerms" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="350dp"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:id="@+id/ScrollView03"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/TextView03"
+                        android:layout_width="300dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:text="@string/user_obligations" />
+                </LinearLayout>
+            </ScrollView>
+
+            <CheckBox
+                android:id="@+id/check_box_user_obligations"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/agreeToTerms" />
+        </LinearLayout>
+
+    </ViewFlipper>
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="@string/next_button" />
+
+</FrameLayout>
+
