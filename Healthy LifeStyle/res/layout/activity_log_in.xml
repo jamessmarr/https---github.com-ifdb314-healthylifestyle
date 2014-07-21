@@ -20,6 +20,7 @@
             android:ems="10"
             android:hint="@string/user_name"
             android:inputType="text"
+            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#!$"
             android:padding="5dp" />
 
         <EditText
@@ -30,6 +31,7 @@
             android:ems="10"
             android:hint="@string/user_password"
             android:inputType="textPassword"
+            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#!$"
             android:padding="5dp" />
 
         <Button

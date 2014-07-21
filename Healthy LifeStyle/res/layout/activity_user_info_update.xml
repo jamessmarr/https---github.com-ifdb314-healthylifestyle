@@ -1,34 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FrameLayout1"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
-    <FrameLayout
-        android:id="@+id/FrameLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|left"
-            android:text="@string/back_button" />
-
-        <Button
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
-            android:text="@string/next_button" />
-    </FrameLayout>
+    android:layout_height="fill_parent" >
 
     <ViewFlipper
         android:id="@+id/UserUpdateFlipper"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center" >
+        android:layout_height="fill_parent" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -37,7 +15,51 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="@string/enter_current_weight" />
+
+            <EditText
+                android:id="@+id/current_weight"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="@string/update_weight_goal" />
+
+            <EditText
+                android:id="@+id/weight_goal"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center|center_horizontal"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/currentUserWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -95,7 +117,6 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -144,9 +165,14 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="9dp" />
             </RadioGroup>
-
         </LinearLayout>
     </ViewFlipper>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/next_button" />
 
+</FrameLayout>

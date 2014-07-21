@@ -23,25 +23,44 @@ public class LogIn extends Activity {
 	private TextView forgotPassword, registerNow, forgotUsernamePassword;
 
 	private Editable user_name, pass_word;
+	
+	private boolean userNameOk, passWordOk;
 
 	private String device_ID, version_ID;
 	public static final String APP_PREFERENCES = "app_preferences";
-	
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_log_in);
 
+		// imports ui elements
 		userName = (EditText) findViewById(R.id.user_name);
 		passWord = (EditText) findViewById(R.id.password);
 		signIn = (Button) findViewById(R.id.signIn);
 		forgotUsernamePassword = (TextView) findViewById(R.id.forgot_username);
 		registerNow = (TextView) findViewById(R.id.register_now);
 
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
+				MODE_PRIVATE);
+		SharedPreferences.Editor prefEditor = settings.edit();
+
+		// get device_ID and store it
+		device_ID = Secure.getString(getBaseContext().getContentResolver(),
+				Secure.ANDROID_ID);
+		prefEditor.putString("device_ID", device_ID);
+		prefEditor.commit();
 		
+		// get app version and store it
+		PackageInfo pInfo;
+		try {
+			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			version_ID = pInfo.versionName;
+			prefEditor.putString("version_ID", version_ID);
+			prefEditor.commit();
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
 
 		if (savedInstanceState == null) {
 			if (settings.getBoolean("needRegister", true)) {
@@ -49,16 +68,15 @@ public class LogIn extends Activity {
 						.setTitle("WELCOME")
 						.setMessage(
 								"Thanks for downloading! Register now to start your path to a healthier lifestyle.")
-						.setNeutralButton(R.string.ok, null).show();
+						.setPositiveButton(R.string.ok,null).show();
 			}
-		}
-
-		// disables sign in button until text is entered in username and
-		// password fields
+		}		
+		
 		userName.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
 
 			}
 
@@ -72,7 +90,56 @@ public class LogIn extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				signIn.setEnabled(true);
+				//tests username field 
+				//if uername is less than 8 characters or more than 15 disables sign In
+				if (s.length() < 8 || s.length() > 15) {
+					userName.setError("UserName must be at least 8 characters and no longer than 15 characters.");
+					userNameOk = false;
+					signIn.setEnabled(false);
+				//if username is between 7 and 16 characters long sets sign in to enabled if pass word is ok as well 		
+				}else if(s.length() > 7 && s.length() < 16){
+					userName.setError(null);
+					userNameOk = true;
+					if (passWordOk && userNameOk){
+						signIn.setEnabled(true);
+					}
+				}
+			}
+
+		});
+
+		passWord.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				//tests password field 
+				//if password is less than 6 characters or more than 16 disables sign In
+				if (s.length() < 6 || s.length() > 16) {
+					passWord.setError("Password must be at least 6 characters and no longer than 16 characters.");
+					passWordOk = false;
+					signIn.setEnabled(false);
+					//if password is between 5 and 17 characters long sets sign in to enabled if username is ok as well 		
+				}else if(s.length() > 5 && s.length() < 17){
+					passWord.setError(null);
+					passWordOk = true;
+					if (passWordOk && userNameOk){
+						signIn.setEnabled(true);
+					}
+				}
 			}
 
 		});
@@ -111,23 +178,19 @@ public class LogIn extends Activity {
 	}
 
 	public void loginAction() {
-		// send this info to server for validation
-		device_ID = Secure.getString(getBaseContext().getContentResolver(),
-				Secure.ANDROID_ID);
+		//gather info for validation of login
+		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
+				MODE_PRIVATE);
+		version_ID = settings.getString("version_ID", null);
+		device_ID = settings.getString("device_ID", null);
 		user_name = userName.getText();
 		pass_word = passWord.getText();
-		PackageInfo pInfo;
-		try {
-			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-			version_ID = pInfo.versionName;
-		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// placeholder variable to keep errors off screen
+
+		//send above info to server here
+		
+		// currently a loop around the login process with server
 		int replyFromServer = 10;
 		// make a call to a new class to handle all of the responses from server
-
 		responseAction(replyFromServer);
 	}
 
@@ -186,24 +249,26 @@ public class LogIn extends Activity {
 	}
 
 	private void recovery() {
-		Intent recovery = new Intent(this, UserInfoUpdate.class);
+		Intent recovery = new Intent(this, Username_Password_Recovery.class);
 		startActivity(recovery);
 	}
 
 	private void updateUser() {
-		//gets the stored user agreements info
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+		// gets the stored user agreements info
+		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
+				MODE_PRIVATE);
 		boolean doneAgreements = settings.getBoolean("doneAgreements", false);
-		//tests if user agreements need to be completed
-		if(doneAgreements){
-			//if no sends user to update user info activity
-			Intent userInfoUpdate = new Intent(this, UserInfoUpdate.class);	
+		// tests if user agreements need to be completed
+		if (doneAgreements) {
+			// if no sends user to update user info activity
+			Intent userInfoUpdate = new Intent(this, UserInfoUpdate.class);
 			startActivity(userInfoUpdate);
-		}else{
-			
-			//if yes sends to agreements activity
-			Intent agreements = new Intent(this, UserAgreements.class);	
+		} else {
+
+			// if yes sends to agreements activity
+			Intent agreements = new Intent(this, UserAgreements.class);
 			startActivity(agreements);
 		}
 	}
+
 }
