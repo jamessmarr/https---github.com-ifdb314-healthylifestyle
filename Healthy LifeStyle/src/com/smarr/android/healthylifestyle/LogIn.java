@@ -1,5 +1,7 @@
 package com.smarr.android.healthylifestyle;
 
+import java.util.regex.Pattern;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,7 +25,7 @@ public class LogIn extends Activity {
 	private TextView forgotPassword, registerNow, forgotUsernamePassword;
 
 	private Editable user_name, pass_word;
-	
+
 	private boolean userNameOk, passWordOk;
 
 	private String device_ID, version_ID;
@@ -50,7 +52,7 @@ public class LogIn extends Activity {
 				Secure.ANDROID_ID);
 		prefEditor.putString("device_ID", device_ID);
 		prefEditor.commit();
-		
+
 		// get app version and store it
 		PackageInfo pInfo;
 		try {
@@ -68,10 +70,10 @@ public class LogIn extends Activity {
 						.setTitle("WELCOME")
 						.setMessage(
 								"Thanks for downloading! Register now to start your path to a healthier lifestyle.")
-						.setPositiveButton(R.string.ok,null).show();
+						.setPositiveButton(R.string.ok, null).show();
 			}
-		}		
-		
+		}
+
 		userName.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -90,19 +92,40 @@ public class LogIn extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				//tests username field 
-				//if uername is less than 8 characters or more than 15 disables sign In
-				if (s.length() < 8 || s.length() > 15) {
-					userName.setError("UserName must be at least 8 characters and no longer than 15 characters.");
-					userNameOk = false;
-					signIn.setEnabled(false);
-				//if username is between 7 and 16 characters long sets sign in to enabled if pass word is ok as well 		
-				}else if(s.length() > 7 && s.length() < 16){
-					userName.setError(null);
-					userNameOk = true;
-					if (passWordOk && userNameOk){
-						signIn.setEnabled(true);
+				try {
+					if (Character.isLetter(s.charAt(0))) {
+						if (s.length() > 7) {
+							if (s.length() < 16) {
+								if (Pattern.compile("[0-9]")
+										.matcher(s.toString()).find()) {
+									userName.setError(null);
+									userNameOk = true;
+									if (userNameOk && passWordOk) {
+										signIn.setEnabled(true);
+									}
+								} else {
+									userName.setError(getText(R.string.username_one_number));
+									userNameOk = false;
+									signIn.setEnabled(false);
+								}
+
+							} else {
+								userName.setError(getText(R.string.username_too_long));
+								userNameOk = false;
+								signIn.setEnabled(false);
+							}
+						} else {
+							userName.setError(getText(R.string.username_too_short));
+							userNameOk = false;
+							signIn.setEnabled(false);
+						}
+					} else {
+						userName.setError(getText(R.string.username_start_letter));
+						userNameOk = false;
+						signIn.setEnabled(false);
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 
@@ -126,19 +149,37 @@ public class LogIn extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				//tests password field 
-				//if password is less than 6 characters or more than 16 disables sign In
-				if (s.length() < 6 || s.length() > 16) {
-					passWord.setError("Password must be at least 6 characters and no longer than 16 characters.");
+
+				if (s.length() > 5) {
+					if (s.length() < 17) {
+						if (Pattern.compile("[a-zA-Z]").matcher(s.toString())
+								.find()) {
+							if (Pattern.compile("[0-9]").matcher(s.toString())
+									.find()) {
+								passWord.setError(null);
+								passWordOk = true;
+								if (userNameOk && passWordOk) {
+									signIn.setEnabled(true);
+								}
+							} else {
+								passWord.setError(getText(R.string.password_one_number));
+								passWordOk = false;
+								signIn.setEnabled(false);
+							}
+						} else {
+							passWord.setError(getText(R.string.password_one_letter));
+							passWordOk = false;
+							signIn.setEnabled(false);
+						}
+					} else {
+						passWord.setError(getText(R.string.password_too_long));
+						passWordOk = false;
+						signIn.setEnabled(false);
+					}
+				} else {
+					passWord.setError(getText(R.string.password_too_short));
 					passWordOk = false;
 					signIn.setEnabled(false);
-					//if password is between 5 and 17 characters long sets sign in to enabled if username is ok as well 		
-				}else if(s.length() > 5 && s.length() < 17){
-					passWord.setError(null);
-					passWordOk = true;
-					if (passWordOk && userNameOk){
-						signIn.setEnabled(true);
-					}
 				}
 			}
 
@@ -178,7 +219,7 @@ public class LogIn extends Activity {
 	}
 
 	public void loginAction() {
-		//gather info for validation of login
+		// gather info for validation of login
 		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
 				MODE_PRIVATE);
 		version_ID = settings.getString("version_ID", null);
@@ -186,8 +227,8 @@ public class LogIn extends Activity {
 		user_name = userName.getText();
 		pass_word = passWord.getText();
 
-		//send above info to server here
-		
+		// send above info to server here
+
 		// currently a loop around the login process with server
 		int replyFromServer = 10;
 		// make a call to a new class to handle all of the responses from server

@@ -32,5 +32,17 @@
     <string name="enter_current_weight">Please update your weight:</string>
     <string name="update_weight_goal">Please update weight goal:</string>
     <string name="user_weight">"Your Current Weight: "</string>
+    <string name="email">E-mail</string>
+    <string name="submit">Submit</string>
+    <string name="registration_instructions">"Please complete the form below and click \"Submit\" to register. "</string>
+    <string name="password_one_letter">Password must contain at least one letter.</string>
+    <string name="password_one_number">Password must contain at least one number.</string>
+    <string name="password_too_long">Password cannot be more than 15 characters long.</string>
+    <string name="password_too_short">Password must be at least 8 characters long.</string>
+    <string name="username_one_number">Username must contain at least one number.</string>
+    <string name="username_start_letter">Username must start with a letter.</string>
+    <string name="username_too_long">Username cannot be more than 15 characters long.</string>
+    <string name="username_too_short">Username must be at least 8 characters long.</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 
 </resources>
