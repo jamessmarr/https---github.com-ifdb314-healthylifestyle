@@ -44,5 +44,15 @@
     <string name="username_too_long">Username cannot be more than 15 characters long.</string>
     <string name="username_too_short">Username must be at least 8 characters long.</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
-
+    <string name="thank_you_for_downloading">Thanks for downloading! Register now to start your path to a healthier lifestyle.</string>
+    <string name="last_login">Last Login: </string>
+	<string name="welcome">Welcome!</string>
+	<string name="welcome_back">Welcome Back!</string>
+	<string name="thank_you">Thank You!</string>
+	<string name="thank_you_for_registering">Please check your email to continue the registration process.</string>
+	<string name="return_to_login">Return to Log In</string>
+	<string name="username_exists">The username you entered is already in use, please use the forgot username/password link or try again.</string>
+	<string name="email_exists">The email you entered is already in use, please use the forgot username/password link or try again.</string>
+	<string name="device_id_exists">This device is already registered to: </string>
+	<string name="error_occured">An error occurred while trying to validate your registration please try again later.</string>
 </resources>

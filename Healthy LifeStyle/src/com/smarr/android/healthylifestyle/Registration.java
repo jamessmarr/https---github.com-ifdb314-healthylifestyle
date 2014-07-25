@@ -2,7 +2,13 @@ package com.smarr.android.healthylifestyle;
 
 import java.util.regex.Pattern;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,13 +16,17 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class Registration extends Activity {
 
 	private Button submitRegistration;
 	private EditText userName, passWord, emailAddress;
+	private TextView returnToLogin;
 
 	private boolean userNameOk, passWordOk;
+
+	private JSONObject registrationObject = new JSONObject();
 
 	public static final String APP_PREFERENCES = "app_preferences";
 
@@ -25,14 +35,11 @@ public class Registration extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_registration);
 
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = settings.edit();
-
 		submitRegistration = (Button) findViewById(R.id.submit_registration);
 		userName = (EditText) findViewById(R.id.userName);
 		passWord = (EditText) findViewById(R.id.passWord);
 		emailAddress = (EditText) findViewById(R.id.userEmail);
+		returnToLogin = (TextView) findViewById(R.id.returnToLogIn);
 
 		userName.addTextChangedListener(new TextWatcher() {
 
@@ -186,17 +193,95 @@ public class Registration extends Activity {
 			}
 
 		});
+		returnToLogin.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				goToLogIn();
+
+			}
+		});
 
 		submitRegistration.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// if (!passWord.getText().toString().contains(csAlpha)
-				// && !passWord.getText().toString().contains(csNumeric)) {
-				// passWord.setError("Password must contain at least one number and one letter");
-				// }
+				try {
+					registerRequest();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 		});
 
+	}
+
+	private void registerRequest() throws JSONException {
+		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
+				MODE_PRIVATE);
+		// adds the registration required values into the JSON object throws
+		// exception if any value is null
+
+		registrationObject.put("userName", userName.getText());
+		registrationObject.put("passWord", passWord.getText());
+		registrationObject.put("emailAddress", emailAddress.getText());
+		registrationObject.put("device_ID",
+				settings.getString("device_ID", null));
+
+		// added a boolean into the object to bypass the registration process
+		// changing true or flase fails or succeds the process
+		registrationObject.put("registerOk", true);
+		// the following values are for testing the outcomes of the registration
+		registrationObject.put("usernameExists", false);
+		registrationObject.put("emailExists", false);
+		registrationObject.put("deviceIDExists", false);
+
+		// dummy call to server sending JSON object
+		// registrationObject = sendInfo(registrationObject);
+		// this is where I assume the server will add a boolean value into the
+		// JSON object
+		// as well as a string or two for errors and such
+
+		if (registrationObject.getBoolean("registerOk")) {
+			new AlertDialog.Builder(this)
+					.setTitle(getText(R.string.thank_you))
+					.setMessage(getText(R.string.thank_you_for_registering))
+					.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									SharedPreferences settings = getSharedPreferences(
+											APP_PREFERENCES, MODE_PRIVATE);
+									SharedPreferences.Editor prefEditor = settings
+											.edit();
+									prefEditor
+											.putBoolean("needRegister", false);
+									prefEditor.commit();
+									goToLogIn();
+
+								}
+							}).show();
+		} else {
+			submitRegistration.setFocusableInTouchMode(true);
+			submitRegistration.requestFocus();
+			if (registrationObject.getBoolean("usernameExists")) {
+				submitRegistration.setError(getText(R.string.username_exists));
+			} else if (registrationObject.getBoolean("emailExists")) {
+				submitRegistration.setError(getText(R.string.email_exists));
+			} else if (registrationObject.getBoolean("deviceIDExists")) {
+				submitRegistration.setError(getText(R.string.device_id_exists));
+			} else {
+				submitRegistration.setError(getText(R.string.error_occured));
+			}
+		}
+	}
+
+	private void goToLogIn() {
+		Intent logIn = new Intent(this, LogIn.class);
+		startActivity(logIn);
 	}
 }

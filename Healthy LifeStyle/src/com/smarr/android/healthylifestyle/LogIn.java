@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -55,6 +54,7 @@ public class LogIn extends Activity {
 
 		// get app version and store it
 		PackageInfo pInfo;
+		
 		try {
 			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			version_ID = pInfo.versionName;
@@ -63,15 +63,13 @@ public class LogIn extends Activity {
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		// if first login welcomes user
+		if (settings.getBoolean("needRegister", true)) {
+			new AlertDialog.Builder(this).setTitle(getText(R.string.welcome))
+					.setMessage(getText(R.string.thank_you_for_downloading))
+					.setPositiveButton(R.string.ok, null).show();
 
-		if (savedInstanceState == null) {
-			if (settings.getBoolean("needRegister", true)) {
-				new AlertDialog.Builder(this)
-						.setTitle("WELCOME")
-						.setMessage(
-								"Thanks for downloading! Register now to start your path to a healthier lifestyle.")
-						.setPositiveButton(R.string.ok, null).show();
-			}
 		}
 
 		userName.addTextChangedListener(new TextWatcher() {
@@ -227,10 +225,14 @@ public class LogIn extends Activity {
 		user_name = userName.getText();
 		pass_word = passWord.getText();
 
-		// send above info to server here
+		// send above info to server here and get login response from server
+
+		int replyFromServer = 10;
+
+		// stores date and time of successful login attempt
 
 		// currently a loop around the login process with server
-		int replyFromServer = 10;
+
 		// make a call to a new class to handle all of the responses from server
 		responseAction(replyFromServer);
 	}
