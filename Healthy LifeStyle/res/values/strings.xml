@@ -51,8 +51,16 @@
 	<string name="thank_you">Thank You!</string>
 	<string name="thank_you_for_registering">Please check your email to continue the registration process.</string>
 	<string name="return_to_login">Return to Log In</string>
+	<string name="username_exists_title">Username Error</string>
 	<string name="username_exists">The username you entered is already in use, please use the forgot username/password link or try again.</string>
+	<string name="email_exists_title">Email Error</string>
 	<string name="email_exists">The email you entered is already in use, please use the forgot username/password link or try again.</string>
+	<string name="device_id_exists_title">Device ID Error</string>
 	<string name="device_id_exists">This device is already registered to: </string>
+	<string name="error_occured_title">Error</string>
 	<string name="error_occured">An error occurred while trying to validate your registration please try again later.</string>
+	<string name="action_required_title">Action Required</string>
+	<string name="action_required_text">Log in was successful, however aditional action is required before continuing.</string>
+	<string name="login_failed_title">Log In Failed</string>
+	<string name="login_failed_text">Login failed please try again</string>
 </resources>

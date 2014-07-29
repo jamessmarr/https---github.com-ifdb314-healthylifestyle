@@ -1,4 +1,4 @@
-package com.smarr.android.healthylifestyle;
+package com.smarr.android.healthylifestyle.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.widget.TextView;
+
+import com.smarr.android.healthylifestyle.R;
 
 public class UserStatus extends Activity {
 

@@ -1,4 +1,4 @@
-package com.smarr.android.healthylifestyle;
+package com.smarr.android.healthylifestyle.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ViewFlipper;
+
+import com.smarr.android.healthylifestyle.R;
 
 public class UserAgreements extends Activity {
 

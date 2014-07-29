@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
          <activity
-            android:name="com.smarr.android.healthylifestyle.SplashScreen"
+            android:name="com.smarr.android.healthylifestyle.activity.SplashScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,27 +23,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.smarr.android.healthylifestyle.LogIn"
+            android:name="com.smarr.android.healthylifestyle.activity.LogIn"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.smarr.android.healthylifestyle.Registration"
+            android:name="com.smarr.android.healthylifestyle.activity.Registration"
             android:label="@string/title_activity_registration" >
         </activity>
         <activity
-            android:name="com.smarr.android.healthylifestyle.UserInfoUpdate"
+            android:name="com.smarr.android.healthylifestyle.activity.UserInfoUpdate"
             android:label="@string/title_activity_user_info_update" >
         </activity>
         <activity
-            android:name="com.smarr.android.healthylifestyle.UserStatus"
+            android:name="com.smarr.android.healthylifestyle.activity.UserStatus"
             android:label="@string/title_activity_user_status" >
         </activity>
         <activity
-            android:name="com.smarr.android.healthylifestyle.Username_Password_Recovery"
+            android:name="com.smarr.android.healthylifestyle.activity.Username_Password_Recovery"
             android:label="@string/title_activity_username__password__recovery" >
         </activity>
         <activity
-            android:name="com.smarr.android.healthylifestyle.UserAgreements"
+            android:name="com.smarr.android.healthylifestyle.activity.UserAgreements"
             android:label="@string/title_activity_user_agreements" >
         </activity>
        

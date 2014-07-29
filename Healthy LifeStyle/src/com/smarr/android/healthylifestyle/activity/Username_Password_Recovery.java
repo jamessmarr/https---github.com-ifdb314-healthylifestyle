@@ -1,7 +1,9 @@
-package com.smarr.android.healthylifestyle;
+package com.smarr.android.healthylifestyle.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.smarr.android.healthylifestyle.R;
 
 public class Username_Password_Recovery extends Activity {
 
