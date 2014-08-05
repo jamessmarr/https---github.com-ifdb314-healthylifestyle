@@ -7,13 +7,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.smarr.android.healthylifestyle.R;
 import com.smarr.android.healthylifestyle.utilities.exception.BaseException;
 import com.smarr.android.healthylifestyle.utilities.http.HttpConnectionUtilities;
+import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 
 public class UserStatus extends Activity {
 
@@ -21,7 +21,7 @@ public class UserStatus extends Activity {
 	
 	private int desired_Weight, failures;
 
-	public static final String APP_PREFERENCES = "app_preferences";
+	private StoreAppInfo storage;
 	
 	private JSONObject userProfile;
 	private int Gender = 1;
@@ -37,19 +37,15 @@ public class UserStatus extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_status);
+		
+		storage = new StoreAppInfo(getApplicationContext());
 
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = settings.edit();
-		
-		
-		current_Weight = settings.getInt("current_Weight", 0);
-		weight_last_updated = settings.getString("weight_last_updated", "");
-		desired_Weight = settings.getInt("desired_Weight", 0);
+		current_Weight = storage.getInt("current_Weight", 0);
+		weight_last_updated = storage.getString("weight_last_updated", "");
+		desired_Weight = storage.getInt("desired_Weight", 0);
 				
-		if(settings.getBoolean("newUser", false)){
+		if(storage.getBoolean("newUser", false)){
 			getUserProfile();
-			getInitialPictures();
 		}
 		
 		getUserMessages();

@@ -3,28 +3,26 @@ package com.smarr.android.healthylifestyle.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.smarr.android.healthylifestyle.R;
+import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 
 public class UserAgreements extends Activity {
 
 	private Button nextButton;
 	private CheckBox aboutCheck, whyCheck, howWorksCheck, userObligationsCheck;
-	public static final String APP_PREFERENCES = "app_preferences";
-
+	private StoreAppInfo storage;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_agreements);
 
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		final SharedPreferences.Editor prefEditor = settings.edit();
+		storage = new StoreAppInfo(getApplicationContext());
 
 		if (savedInstanceState == null) {
 
@@ -50,8 +48,7 @@ public class UserAgreements extends Activity {
 							howWorksCheck.setError(null);
 							if (userObligationsCheck.isChecked()) {
 								userObligationsCheck.setError(null);
-								prefEditor.putBoolean("doneAgreements", true);
-								prefEditor.commit();
+								storage.putBoolean("doneAgreements", true);
 								nextActivity();
 							} else {
 								userObligationsCheck

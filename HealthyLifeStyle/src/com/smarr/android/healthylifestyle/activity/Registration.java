@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 
 import com.smarr.android.healthylifestyle.R;
 import com.smarr.android.healthylifestyle.utilities.http.HttpConnectionUtilities;
+import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 import com.smarr.android.healthylifestyle.utilities.validation.UserValidation;
 
 public class Registration extends Activity {
@@ -31,7 +31,8 @@ public class Registration extends Activity {
 
 	private JSONObject registrationObject = new JSONObject();
 
-	public static final String APP_PREFERENCES = "app_preferences";
+	private StoreAppInfo storage;
+	
 	
 	UserValidation validateRegistration = new UserValidation();
 
@@ -39,7 +40,9 @@ public class Registration extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_registration);
-
+		
+		storage = new StoreAppInfo(getApplicationContext());
+		
 		submitRegistration = (Button) findViewById(R.id.submit_registration);
 		userName = (EditText) findViewById(R.id.userName);
 		passWord = (EditText) findViewById(R.id.passWord);
@@ -157,10 +160,7 @@ public class Registration extends Activity {
 	}
 
 	private void registerRequest() throws JSONException {
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = settings.edit();
-
+		
 		String url = null;
 		
 		int response = 10;//set this back at 0 when time comes to connect with server the value of 10 gets me around the http connection for now
@@ -170,7 +170,7 @@ public class Registration extends Activity {
 		HttpConnectionUtilities.addNameValuePair("username", userName.getText().toString(),postData);
 		HttpConnectionUtilities.addNameValuePair("password", passWord.getText().toString(), postData);
 		HttpConnectionUtilities.addNameValuePair("emailAddress",emailAddress.getText().toString(),postData);
-		HttpConnectionUtilities.addNameValuePair("device_ID", settings.getString("device_ID", null),postData);
+		HttpConnectionUtilities.addNameValuePair("device_ID", storage.getString("device_ID", null),postData);
 		
 		/*try {
 			response = HttpConnectionUtilities.postDataNoReturnMessage(url, postData);
@@ -189,20 +189,15 @@ public class Registration extends Activity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									SharedPreferences settings = getSharedPreferences(
-											APP_PREFERENCES, MODE_PRIVATE);
-									SharedPreferences.Editor prefEditor = settings
-											.edit();
-									prefEditor
+									
+									storage
 											.putBoolean("needRegister", false);
-									prefEditor.commit();
 									goToLogIn();
 
 								}
 							}).show();
-			prefEditor.putBoolean("newUser", true);
-			prefEditor.putBoolean("needRegister", false);
-			prefEditor.commit();
+			storage.putBoolean("newUser", true);
+			storage.putBoolean("needRegister", false);
 		} 
 		if (response == 40){
 			new AlertDialog.Builder(this).setTitle(getText(R.string.username_exists_title))

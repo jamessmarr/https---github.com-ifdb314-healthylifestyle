@@ -1,13 +1,14 @@
 package com.smarr.android.healthylifestyle.activity;
 
 import java.util.List;
+
 import org.apache.http.NameValuePair;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -18,9 +19,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.smarr.android.healthylifestyle.R;
-import com.smarr.android.healthylifestyle.utilities.exception.BaseException;
 import com.smarr.android.healthylifestyle.utilities.http.HttpConnectionUtilities;
+import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 import com.smarr.android.healthylifestyle.utilities.validation.UserValidation;
 
 public class LogIn extends Activity {
@@ -28,9 +30,8 @@ public class LogIn extends Activity {
 	private EditText userName, passWord;
 	private Button signIn;
 	private TextView registerNow, forgotUsernamePassword;
-	private String device_ID, version_ID;
-
-	public static final String APP_PREFERENCES = "app_preferences";
+	
+	private StoreAppInfo storage;
 	
 	UserValidation validateLogIn = new UserValidation();
 
@@ -39,6 +40,8 @@ public class LogIn extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_log_in);
 
+		storage = new StoreAppInfo(getApplicationContext());
+		
 		// imports ui elements
 		userName = (EditText) findViewById(R.id.user_name);
 		passWord = (EditText) findViewById(R.id.password);
@@ -46,34 +49,30 @@ public class LogIn extends Activity {
 		forgotUsernamePassword = (TextView) findViewById(R.id.forgot_username);
 		registerNow = (TextView) findViewById(R.id.register_now);
 
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = settings.edit();
 
 		// get device_ID and store it
-		device_ID = Secure.getString(getBaseContext().getContentResolver(),
-				Secure.ANDROID_ID);
-		prefEditor.putString("device_ID", device_ID);
-		prefEditor.commit();
+		
+		storage.putString("device_ID", Secure.getString(getBaseContext().getContentResolver(),
+				Secure.ANDROID_ID));
 
 		// get app version and store it
 		PackageInfo pInfo;
 
 		try {
 			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-			version_ID = pInfo.versionName;
-			prefEditor.putString("version_ID", version_ID);
-			prefEditor.commit();
+			storage.putString("version_ID", pInfo.versionName);
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		// if registration has not been completed on the device welcomes user
-		if (settings.getBoolean("needRegister", true)) {
+		if (storage.getBoolean("needRegister", true)) {
 			new AlertDialog.Builder(this).setTitle(getText(R.string.welcome))
 					.setMessage(getText(R.string.thank_you_for_downloading))
 					.setPositiveButton(R.string.ok, null).show();
-
+			//if user needs to register than the assumption is set that user needs photos for first time use as well
+			//this value will not be false until photos are logged
+			storage.putBoolean("needPhoto", true);
 		}
 
 		userName.addTextChangedListener(new TextWatcher() {
@@ -167,8 +166,6 @@ public class LogIn extends Activity {
 
 	@SuppressLint("NewApi") public void loginAction() {
 		// gather info for validation of login
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
 		String url = null;
 		
 		int response = 10;//set this back at 0 when time comes to connect with server the value of 10 gets me around the http connection for now
@@ -177,8 +174,8 @@ public class LogIn extends Activity {
 		
 		HttpConnectionUtilities.addNameValuePair("username", userName.getText().toString(),postData);
 		HttpConnectionUtilities.addNameValuePair("password", passWord.getText().toString(), postData);
-		HttpConnectionUtilities.addNameValuePair("version_ID", settings.getString("version_ID", null),postData);
-		HttpConnectionUtilities.addNameValuePair("device_ID", settings.getString("device_ID", null),postData);
+		HttpConnectionUtilities.addNameValuePair("version_ID", storage.getString("version_ID", null),postData);
+		HttpConnectionUtilities.addNameValuePair("device_ID", storage.getString("device_ID", null),postData);
 		
 		
 		
@@ -257,9 +254,8 @@ public class LogIn extends Activity {
 
 	private void updateUser() {
 		// gets the stored user agreements info
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		boolean doneAgreements = settings.getBoolean("doneAgreements", false);
+		
+		boolean doneAgreements = storage.getBoolean("doneAgreements", false);
 		// tests if user agreements need to be completed
 		if (doneAgreements) {
 			// if agreements are done sends user to update user info activity

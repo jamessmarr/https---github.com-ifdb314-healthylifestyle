@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.ViewFlipper;
 
 import com.smarr.android.healthylifestyle.R;
+import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 
 public class UserInfoUpdate extends Activity {
 
@@ -39,12 +39,15 @@ public class UserInfoUpdate extends Activity {
 	
 	private String lastLogin;
 
-	public static final String APP_PREFERENCES = "app_preferences";
+	private StoreAppInfo storage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_info_update);
+		
+		storage = new StoreAppInfo(getApplicationContext());
+		
 		lastLogin();
 		
 
@@ -188,14 +191,11 @@ public class UserInfoUpdate extends Activity {
 				if (flipper.getDisplayedChild() != flipper.getChildCount() - 1) {
 					flipper.showNext();
 				} else {
-					SharedPreferences settings = getSharedPreferences(
-							APP_PREFERENCES, MODE_PRIVATE);
-					SharedPreferences.Editor prefEditor = settings.edit();
-					prefEditor.putInt("current_Weight", current_Weight);
-					prefEditor.putInt("desired_Weight", desired_Weight);
-					prefEditor.putInt("current_body_image", current_body_image_checked);
-					prefEditor.putInt("desired_body_image", desired_body_image_checked);
-					prefEditor.commit();
+					
+					storage.putInt("current_Weight", current_Weight);
+					storage.putInt("desired_Weight", desired_Weight);
+					storage.putInt("current_body_image", current_body_image_checked);
+					storage.putInt("desired_body_image", desired_body_image_checked);
 					nextActivity();
 				}
 			}
@@ -214,8 +214,14 @@ public class UserInfoUpdate extends Activity {
 	}
 
 	private void nextActivity() {
-		Intent userStatus = new Intent(this, UserStatus.class);
-		startActivity(userStatus);
+		
+		if(storage.getBoolean("needPhoto", false)&& storage.getBoolean("hasCamera", true)){
+		Intent userPhoto = new Intent(this, UserPhoto.class);
+		startActivity(userPhoto);
+		}else{
+			Intent userStatus = new Intent(this, UserStatus.class);
+			startActivity(userStatus);
+		}
 
 	}
 
@@ -236,17 +242,15 @@ public class UserInfoUpdate extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						//stores date user last updated weight
-						SharedPreferences settings = getSharedPreferences(
-								APP_PREFERENCES, MODE_PRIVATE);
-						SharedPreferences.Editor prefEditor = settings.edit();
+						
+						
 						Calendar c = Calendar.getInstance();
 						int month = c.get(Calendar.MONTH) + 1;
 						int year = c.get(Calendar.YEAR);
 						int day = c.get(Calendar.DATE);
 						
 						String weight_last_updated ="  " + month +"/"+ day + "/" + year;
-						prefEditor.putString("weight_last_updated", weight_last_updated);
-						prefEditor.commit();
+						storage.putString("weight_last_updated", weight_last_updated);
 						desiredWeightUpdate();
 
 					}
@@ -370,11 +374,7 @@ public class UserInfoUpdate extends Activity {
 	}
 	
 	public void lastLogin(){
-		SharedPreferences settings = getSharedPreferences(APP_PREFERENCES,
-				MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = settings.edit();
-
-		lastLogin = settings.getString("lastLogin", "null");
+		lastLogin = storage.getString("lastLogin", "null");
 
 		if (lastLogin == "null") {
 			//sets last login time if first time logging on
@@ -386,8 +386,7 @@ public class UserInfoUpdate extends Activity {
 			int day = c.get(Calendar.DATE);
 			
 			lastLogin ="  " + month +"/"+ day + "/" + year + " at " + now.format("%k:%M");
-			prefEditor.putString("lastLogin", lastLogin);
-			prefEditor.commit();
+			storage.putString("lastLogin", lastLogin);
 			currentWeightUpdate();
 		} else {
 			//displays the last login date and time and stores new date time for this login
@@ -410,9 +409,7 @@ public class UserInfoUpdate extends Activity {
 			int day = c.get(Calendar.DATE);
 			
 			lastLogin ="  " + month +"/"+ day + "/" + year + " at " + now.format("%k:%M");
-			prefEditor.putString("lastLogin", lastLogin);
-			prefEditor.commit();
-					
+			storage.putString("lastLogin", lastLogin);					
 		}
 	}
 
