@@ -244,6 +244,196 @@
             </LinearLayout>
         </LinearLayout>
 
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/leftSideImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/takeLeftSidePhoto"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter" />
+
+            <Button
+                android:id="@+id/takeLeftSidePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="44dp"
+                android:onClick="onTakeLeftPhotoClicked"
+                android:text="@string/left_side_photo" />
+
+            <TextView
+                android:id="@+id/leftSidePhotoInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/left_side_photo_instructions" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/rightSideImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/takeRightSidePhoto"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter" />
+
+            <Button
+                android:id="@+id/takeRightSidePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="44dp"
+                android:onClick="onTakeRightPhotoClicked"
+                android:text="@string/right_side_photo" />
+
+            <TextView
+                android:id="@+id/rightSidePhotoInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/right_side_photo_instructions" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout02"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/faceImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/takeFacePhoto"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter" />
+
+            <Button
+                android:id="@+id/takeFacePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="44dp"
+                android:onClick="onTakeFacePhotoClicked"
+                android:text="@string/face_photo" />
+
+            <TextView
+                android:id="@+id/facePhotoInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/face_photo_instructions" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout03"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/bellyImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/takeBellyPhoto"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter" />
+
+            <Button
+                android:id="@+id/takeBellyPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="44dp"
+                android:onClick="onTakeBellyPhotoClicked"
+                android:text="@string/belly_photo" />
+
+            <TextView
+                android:id="@+id/bellyPhotoInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/belly_photo_instructions" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout04"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/otherImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/takeOtherPhoto"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter" />
+
+            <Button
+                android:id="@+id/takeOtherPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="44dp"
+                android:onClick="onTakeOtherPhotoClicked"
+                android:text="@string/other_photo" />
+
+            <TextView
+                android:id="@+id/otherPhotoInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/other_photo_instructions" />
+        </RelativeLayout>
+
     </ViewFlipper>
 
     <Button

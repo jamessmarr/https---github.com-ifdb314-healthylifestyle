@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,6 +17,7 @@ import android.provider.Settings.Secure;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -138,7 +140,11 @@ public class LogIn extends Activity {
 			public void onClick(View v) {
 
 				loginAction();
+				InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE); 
 
+				inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                           InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		});
 
@@ -259,8 +265,9 @@ public class LogIn extends Activity {
 		// tests if user agreements need to be completed
 		if (doneAgreements) {
 			// if agreements are done sends user to update user info activity
-			Intent userInfoUpdate = new Intent(this, UserInfoUpdate.class);
-			startActivity(userInfoUpdate);
+			Intent userStatus = new Intent(this, UserStatus.class);
+			
+			startActivity(userStatus);
 		} else {
 
 			// else sends to agreements activity
