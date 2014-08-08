@@ -55,7 +55,7 @@
     <string name="user_obligations">zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</string>
     <string name="agreeToTerms">I agree to the terms listed above</string>
     <string name="title_activity_user_agreements">UserAgreements</string>
-    <string name="enter_current_weight">Please update your weight:</string>
+    <string name="enter_current_weight">Please update your current weight:</string>
     <string name="update_weight_goal">Please update weight goal:</string>
     <string name="user_weight">"Your Current Weight: "</string>
     <string name="email">E-mail</string>
@@ -118,5 +118,8 @@
     <string name="belly_photo_instructions">Belly photo instructions go here</string>
     <string name="other_photo_instructions">Other photo instructions go here</string>
     <string name="main_menu">Main Menu</string>
+    <string name="enter_desired_weight">Please update your weight goal:</string>
+    <string name="update">Update</string>
+    <string name="desired_weight_prompt">Please enter your desired weight:</string>
 
 </resources>

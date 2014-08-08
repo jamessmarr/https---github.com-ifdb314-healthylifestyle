@@ -21,13 +21,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.smarr.android.healthylifestyle.R;
+import com.smarr.android.healthylifestyle.fragments.MyStatus;
+import com.smarr.android.healthylifestyle.fragments.Notifications;
+import com.smarr.android.healthylifestyle.fragments.PhotosFragment;
+import com.smarr.android.healthylifestyle.fragments.UpdateWeights;
 import com.smarr.android.healthylifestyle.slidingmenu.NavDrawerItem;
 import com.smarr.android.healthylifestyle.slidingmenu.NavDrawerListAdapter;
 import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
-import com.smarr.fragments.Notifications;
-import com.smarr.fragments.UpdateWeights;
-import com.smarr.fragments.MyStatus;
-import com.smarr.fragments.PhotosFragment;
 
 public class UserStatus extends Activity {
 	
@@ -198,7 +198,7 @@ public class UserStatus extends Activity {
         if (fragment != null) {
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
+                    .replace(R.id.frame_container, fragment).addToBackStack(null).commit();
  
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
