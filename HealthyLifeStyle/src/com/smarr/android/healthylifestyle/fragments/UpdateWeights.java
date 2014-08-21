@@ -1,5 +1,7 @@
 package com.smarr.android.healthylifestyle.fragments;
 
+import org.joda.time.DateTime;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.smarr.android.healthylifestyle.R;
+import com.smarr.android.healthylifestyle.misc_class.DateFormatsAndInfo;
 import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 
 public class UpdateWeights extends Fragment {
@@ -34,9 +37,14 @@ public class UpdateWeights extends Fragment {
 	private EditText current_weight, desired_weight;
 
 	private StoreAppInfo storage;
-
-	public UpdateWeights() {
-	}
+	
+	private int weightCounter;
+	
+	private String lastWeightUpdate;
+	
+	private DateFormatsAndInfo dateInfo = new DateFormatsAndInfo();
+	
+	private DateTime date;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +54,17 @@ public class UpdateWeights extends Fragment {
 				false);
 
 		storage = new StoreAppInfo(getActivity());
+		
+		date = new DateTime();
+		
+		weightCounter = storage.getInt("weightCounter", 1);
+		
+		lastWeightUpdate = storage.getString("lastWeightUpdate", "");
+		
+		
+		
+		
+		
 		//edittext for curent weight entry
 		current_weight = (EditText) v.findViewById(R.id.currentWeightUpdate);
 		current_weight.addTextChangedListener(new TextWatcher() {
@@ -284,8 +303,12 @@ public class UpdateWeights extends Fragment {
 				}
 				if (currentWeightEntered && desiredWeightEntered
 						&& currentChecked && desiredChecked) {
-					storage.putInt("current_Weight", currentWeight);
+					lastWeightUpdate = dateInfo.getDateFormat(date);
+					weightCounter++;
+					storage.putInt("weightCounter", weightCounter);
+					storage.putInt("current_Weight"+weightCounter, currentWeight);
 					storage.putInt("desired_Weight", desiredWeight);
+					storage.putString("lastWeightUpdate", lastWeightUpdate);
 					storage.putInt("current_body_image", current_image_checked);
 					storage.putInt("desired_body_image", desired_image_checked);
 					storage.putBoolean("weight_updated", true);
@@ -295,9 +318,9 @@ public class UpdateWeights extends Fragment {
 					Toast.makeText(getActivity(), "Info Updated",
 							Toast.LENGTH_SHORT).show();
 					getFragmentManager().popBackStackImmediate();
+					}
 
-				}
-
+			
 			}
 		});
 

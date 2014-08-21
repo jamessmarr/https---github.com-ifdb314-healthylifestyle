@@ -14,7 +14,8 @@
         android:allowBackup="true"
         android:icon="@drawable/healthier_lifestyle"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        >
         <activity
             android:name="com.smarr.android.healthylifestyle.activity.SplashScreen"
             android:label="@string/app_name" >

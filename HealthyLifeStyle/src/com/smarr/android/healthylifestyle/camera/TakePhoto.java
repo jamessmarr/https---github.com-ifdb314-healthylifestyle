@@ -1,7 +1,6 @@
 package com.smarr.android.healthylifestyle.camera;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -18,7 +17,6 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.smarr.android.healthylifestyle.utilities.http.HttpConnectionUtilities;
-import com.smarr.android.healthylifestyle.utilities.shared_preferences.PhotoFileTracker;
 import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 
 public class TakePhoto {
@@ -31,34 +29,20 @@ public class TakePhoto {
 	private File fileLeft, fileRight, fileFace, fileBelly, fileOther;
 	private String folderName = "";
 	private int day;
-	
-	private Calendar c;
-	
-	private int month, year, today;
-	
-	private PhotoFileTracker photoTracker = new PhotoFileTracker();
-	
-	private String pictureDateTag;
+	private Bitmap myBitmap;
 
-	public TakePhoto(Context context, String folder) {
+	public TakePhoto(Context context, String folder, String today) {
 		this.setContext(context);
 		this.storage = new StoreAppInfo(context);
-		this.c = Calendar.getInstance();
-		this.month = c.get(Calendar.MONTH) + 1;
-		this.year = c.get(Calendar.YEAR);
-		this.today = c.get(Calendar.DATE);
-		this.setDay(Calendar.DAY_OF_YEAR);
-		this.pictureDateTag = "_" + this.year + "_" + this.month + "_" + this.today;
-		
 		this.setFolderName(folder);
 		
 		this.setPath(new File(Environment.getExternalStorageDirectory()
 				+ "/Healthy_LifeStyle/" + this.getFolderName()));
-		this.setFileLeft(new File(path + "/left_side_image"+pictureDateTag+".jpg"));
-		this.setFileRight(new File(path + "/right_side_image"+pictureDateTag+".jpg"));
-		this.setFileFace(new File(path + "/face_image"+pictureDateTag+".jpg"));
-		this.setFileBelly(new File(path + "/belly_image"+pictureDateTag+".jpg"));
-		this.setFileOther(new File(path + "/other_image"+pictureDateTag+".jpg"));
+		this.setFileLeft(new File(path + "/left_side_image"+today+".jpg"));
+		this.setFileRight(new File(path + "/right_side_image"+today+".jpg"));
+		this.setFileFace(new File(path + "/face_image"+today+".jpg"));
+		this.setFileBelly(new File(path + "/belly_image"+today+".jpg"));
+		this.setFileOther(new File(path + "/other_image"+today+".jpg"));
 	}
 
 	public Context getContext() {
@@ -143,15 +127,21 @@ public class TakePhoto {
 
 	public Bitmap handleLeftPhoto() {
 		if (this.getFileLeft().exists()) {
+			if (myBitmap != null)
+			   {
+			     myBitmap.recycle();
+			     myBitmap = null;
+			     System.gc();
+			   }
 			// store file path for future use
 			// photoTracker.addToLeftFile(this.getFileLeft().getAbsolutePath());
 			// creates bitmap from file
-			Bitmap myBitmap = BitmapFactory.decodeFile(this.getFileLeft()
+			myBitmap = BitmapFactory.decodeFile(this.getFileLeft()
 					.getAbsolutePath());
 			// sets the image to display in the activity
 			Matrix matrix = new Matrix();
 
-			matrix.postRotate(270);
+			matrix.postRotate(90);
 
 			myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(),
 					myBitmap.getHeight(), matrix, true);
@@ -163,15 +153,21 @@ public class TakePhoto {
 
 	public Bitmap handleRightPhoto() {
 		if (this.getFileRight().exists()) {
+			if (myBitmap != null)
+			   {
+			     myBitmap.recycle();
+			     myBitmap = null;
+			     System.gc();
+			   }
 			// store file path for future use
 			//photoTracker.addToRightFile(this.getFileRight().getAbsolutePath());
 			// creates bitmap from file
-			Bitmap myBitmap = BitmapFactory.decodeFile(this.getFileRight()
+			myBitmap = BitmapFactory.decodeFile(this.getFileRight()
 					.getAbsolutePath());
 			// sets the image to display in the activity
 			Matrix matrix = new Matrix();
 
-			matrix.postRotate(270);
+			matrix.postRotate(90);
 
 			myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(),
 					myBitmap.getHeight(), matrix, true);
@@ -183,15 +179,21 @@ public class TakePhoto {
 
 	public Bitmap handleFacePhoto() {
 		if (this.getFileFace().exists()) {
+			if (myBitmap != null)
+			   {
+			     myBitmap.recycle();
+			     myBitmap = null;
+			     System.gc();
+			   }
 			// store file path for future use
 			//photoTracker.addToFaceFile(this.getFileFace().getAbsolutePath());
 			// creates bitmap from file
-			Bitmap myBitmap = BitmapFactory.decodeFile(this.getFileFace()
+			myBitmap = BitmapFactory.decodeFile(this.getFileFace()
 					.getAbsolutePath());
 			// sets the image to display in the activity
 			Matrix matrix = new Matrix();
 
-			matrix.postRotate(270);
+			matrix.postRotate(90);
 
 			myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(),
 					myBitmap.getHeight(), matrix, true);
@@ -203,15 +205,21 @@ public class TakePhoto {
 
 	public Bitmap handleBellyPhoto() {
 		if (this.getFileBelly().exists()) {
+			if (myBitmap != null)
+			   {
+			     myBitmap.recycle();
+			     myBitmap = null;
+			     System.gc();
+			   }
 			// store file path for future use
 			//photoTracker.addToBellyFile(this.getFileBelly().getAbsolutePath());
 			// creates bitmap from file
-			Bitmap myBitmap = BitmapFactory.decodeFile(this.getFileBelly()
+			myBitmap = BitmapFactory.decodeFile(this.getFileBelly()
 					.getAbsolutePath());
 			// sets the image to display in the activity
 			Matrix matrix = new Matrix();
 
-			matrix.postRotate(270);
+			matrix.postRotate(90);
 
 			myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(),
 					myBitmap.getHeight(), matrix, true);
@@ -223,15 +231,21 @@ public class TakePhoto {
 
 	public Bitmap handleOtherPhoto() {
 		if (this.getFileOther().exists()) {
+			if (myBitmap != null)
+			   {
+			     myBitmap.recycle();
+			     myBitmap = null;
+			     System.gc();
+			   }
 			// store file path for future use
 			//photoTracker.addToOtherFile(this.getFileOther().getAbsolutePath());
 			// creates bitmap from file
-			Bitmap myBitmap = BitmapFactory.decodeFile(this.getFileOther()
+			myBitmap = BitmapFactory.decodeFile(this.getFileOther()
 					.getAbsolutePath());
 			// sets the image to display in the activity
 			Matrix matrix = new Matrix();
 
-			matrix.postRotate(270);
+			matrix.postRotate(90);
 
 			myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(),
 					myBitmap.getHeight(), matrix, true);

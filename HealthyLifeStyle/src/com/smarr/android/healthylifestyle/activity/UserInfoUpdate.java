@@ -1,6 +1,6 @@
 package com.smarr.android.healthylifestyle.activity;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +19,7 @@ import android.widget.ViewFlipper;
 
 import com.smarr.android.healthylifestyle.R;
 import com.smarr.android.healthylifestyle.camera.TakePhoto;
+import com.smarr.android.healthylifestyle.misc_class.DateFormatsAndInfo;
 import com.smarr.android.healthylifestyle.utilities.image.ImageConversion;
 import com.smarr.android.healthylifestyle.utilities.shared_preferences.StoreAppInfo;
 
@@ -37,19 +38,21 @@ public class UserInfoUpdate extends Activity {
 
 	private EditText currentWeight, desiredWeight;
 
-	private boolean currentWeightEntered, desiredWeightEntered, currentChecked, desiredChecked;
+	private boolean currentWeightEntered, desiredWeightEntered, currentChecked,
+			desiredChecked;
 
 	private StoreAppInfo storage;
-	
+
 	private TakePhoto photo;
-	
-	private int dayCounter;
+	private int weightCounter = 0;
 
 	private ImageView leftSideImage, rightSideImage, faceImage, bellyImage,
 			otherImage;
 
 	private TextView leftSideInfo, rightSideInfo, faceInfo, bellyInfo,
 			otherInfo;
+
+	private Bitmap myBitmap;
 
 	private static final int CAMERA_RESULT_LEFT = 100;
 	private static final int CAMERA_RESULT_RIGHT = 101;
@@ -62,43 +65,66 @@ public class UserInfoUpdate extends Activity {
 
 	private boolean hasCamera;
 
+	private DateTime date;
+	private DateTime nextSaturday,nextSaturdayPhoto, nextSaturdayWeight;
+	private DateFormatsAndInfo dateInfo = new DateFormatsAndInfo();
+	private String today;
+	private String nextPhotoDay, nextWeightDay;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_info_update);
 
 		storage = new StoreAppInfo(getApplicationContext());
-				
-		dayCounter = 1;
-		storage.putInt("dayCounter", dayCounter);
-		
-		photo = new TakePhoto(this, "Day "+dayCounter);		
+		// sets new local date for user
+		date = new DateTime();
+
+		// gets the date in specified format
+		today = dateInfo.getDateFormat(date);
+
+		photo = new TakePhoto(this, "Day 1", today);
 		hasCamera = photo.hasCamera();
+		// sets the date of the next saturday for tracking future user
+		// requirements
+		nextSaturday = dateInfo.getNextSaturdayFirstUse(date);
+		// adds 2 weeks to the closest saturday
+		nextSaturdayPhoto = nextSaturday.plusDays(14);
+		nextSaturdayWeight = nextSaturday.plus(7);
+		// converts date to string for storage
+		nextPhotoDay = dateInfo.getDateFormat(nextSaturdayPhoto);
+		nextWeightDay = dateInfo.getDateFormat(nextSaturdayWeight);
+		// stores a string value for the date
+		storage.putString("firstPhoto", today);
+		storage.putString("lastPhoto", today);
+		storage.putString("nextPhotoDay", nextPhotoDay);
+		storage.putString("nextWeightDay", nextWeightDay);
+		storage.putString("lastFolderName", "Day 1");
 
 		if (savedInstanceState == null) {
 		}
 
 		flipper = (ViewFlipper) findViewById(R.id.UserUpdateFlipper);
-		
+		// grabs initial user info
 		currentWeight = (EditText) findViewById(R.id.currentWeight);
-		currentWeight.addTextChangedListener(new TextWatcher(){
+		currentWeight.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onTextChanged(CharSequence s, int arg1, int arg2,
-					int arg3) throws NumberFormatException{
+					int arg3) throws NumberFormatException {
 				try {
 					current_weight = Integer.parseInt(s.toString());
 					currentWeightEntered = true;
@@ -106,39 +132,41 @@ public class UserInfoUpdate extends Activity {
 					e.printStackTrace();
 				}
 				checkForNext();
-				
-			}});
-		
+
+			}
+		});
+		// grabs initial user info
 		desiredWeight = (EditText) findViewById(R.id.desiredWeight);
-		desiredWeight.addTextChangedListener(new TextWatcher(){
+		desiredWeight.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
-					int count) throws NumberFormatException{
+					int count) throws NumberFormatException {
 				try {
 					desired_weight = Integer.parseInt(s.toString());
 					desiredWeightEntered = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		
+
 				checkForNext();
-				
-			}});
-		
+
+			}
+		});
+		// grab radioButton elements from the UI
 		current_image_1 = (RadioButton) findViewById(R.id.currentImage1);
 		current_image_2 = (RadioButton) findViewById(R.id.currentImage2);
 		current_image_3 = (RadioButton) findViewById(R.id.currentImage3);
@@ -150,7 +178,7 @@ public class UserInfoUpdate extends Activity {
 		desired_image_3 = (RadioButton) findViewById(R.id.desiredImage3);
 		desired_image_4 = (RadioButton) findViewById(R.id.desiredImage4);
 		desired_image_5 = (RadioButton) findViewById(R.id.desiredImage5);
-		
+		// grab photo imageview elements from UI
 		leftSideImage = (ImageView) findViewById(R.id.leftSideImageView);
 		rightSideImage = (ImageView) findViewById(R.id.rightSideImageView);
 		faceImage = (ImageView) findViewById(R.id.faceImageView);
@@ -163,9 +191,9 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				current_body_image_checked = 1;
-				currentChecked=true;
+				currentChecked = true;
 				checkForNext();
-				
+
 				current_image_2.setChecked(false);
 				current_image_3.setChecked(false);
 				current_image_4.setChecked(false);
@@ -177,7 +205,7 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				current_body_image_checked = 2;
-				currentChecked=true;
+				currentChecked = true;
 				checkForNext();
 				current_image_1.setChecked(false);
 				current_image_3.setChecked(false);
@@ -185,13 +213,12 @@ public class UserInfoUpdate extends Activity {
 				current_image_5.setChecked(false);
 			}
 		});
-
 		current_image_3.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				current_body_image_checked = 3;
-				currentChecked=true;
+				currentChecked = true;
 				checkForNext();
 				current_image_1.setChecked(false);
 				current_image_2.setChecked(false);
@@ -199,13 +226,12 @@ public class UserInfoUpdate extends Activity {
 				current_image_5.setChecked(false);
 			}
 		});
-
 		current_image_4.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				current_body_image_checked = 4;
-				currentChecked=true;
+				currentChecked = true;
 				checkForNext();
 				current_image_1.setChecked(false);
 				current_image_2.setChecked(false);
@@ -218,7 +244,7 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				current_body_image_checked = 5;
-				currentChecked=true;
+				currentChecked = true;
 				checkForNext();
 				current_image_1.setChecked(false);
 				current_image_2.setChecked(false);
@@ -226,13 +252,12 @@ public class UserInfoUpdate extends Activity {
 				current_image_4.setChecked(false);
 			}
 		});
-
 		desired_image_1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				desired_body_image_checked = 1;
-				desiredChecked=true;
+				desiredChecked = true;
 				checkForNext();
 				desired_image_2.setChecked(false);
 				desired_image_3.setChecked(false);
@@ -245,7 +270,7 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				desired_body_image_checked = 2;
-				desiredChecked=true;
+				desiredChecked = true;
 				checkForNext();
 				desired_image_1.setChecked(false);
 				desired_image_3.setChecked(false);
@@ -258,7 +283,7 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				desired_body_image_checked = 3;
-				desiredChecked=true;
+				desiredChecked = true;
 				checkForNext();
 				desired_image_1.setChecked(false);
 				desired_image_2.setChecked(false);
@@ -271,7 +296,7 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				desired_body_image_checked = 4;
-				desiredChecked=true;
+				desiredChecked = true;
 				checkForNext();
 				desired_image_1.setChecked(false);
 				desired_image_2.setChecked(false);
@@ -284,7 +309,7 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				desired_body_image_checked = 5;
-				desiredChecked=true;
+				desiredChecked = true;
 				checkForNext();
 				desired_image_1.setChecked(false);
 				desired_image_2.setChecked(false);
@@ -292,7 +317,7 @@ public class UserInfoUpdate extends Activity {
 				desired_image_4.setChecked(false);
 			}
 		});
-
+		// grab and control next button from UI
 		nextButton = (Button) findViewById(R.id.next_button);
 		nextButton.setEnabled(false);
 
@@ -301,24 +326,30 @@ public class UserInfoUpdate extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (flipper.getDisplayedChild() != flipper.getChildCount() - 1) {
-					
-					if (flipper.getDisplayedChild() > 0 && !hasCamera){
-						storage.putInt("current_Weight", current_weight);
+
+					if (flipper.getDisplayedChild() > 0 && !hasCamera) {
+						storage.putBoolean("doneUpdate", true);
+						storage.putInt("weightCounter", weightCounter);
+						storage.putInt("current_Weight"+weightCounter, current_weight);
 						storage.putInt("desired_Weight", desired_weight);
 						storage.putInt("current_body_image",
 								current_body_image_checked);
 						storage.putInt("desired_body_image",
 								desired_body_image_checked);
-						Toast.makeText(getApplicationContext(), "Camera not detected", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(),
+								"Camera not detected", Toast.LENGTH_SHORT)
+								.show();
 						nextActivity();
-					}else{
+					} else {
 						flipper.showNext();
-					nextButton.setEnabled(false);
+						nextButton.setEnabled(false);
 					}
 				} else {
-
-					storage.putInt("current_Weight", current_weight);
+					storage.putBoolean("doneUpdate", true);
+					storage.putInt("weightCounter", weightCounter);
+					storage.putInt("current_Weight"+weightCounter, current_weight);
 					storage.putInt("desired_Weight", desired_weight);
+					storage.putString("lastWeightUpdate", today);
 					storage.putInt("current_body_image",
 							current_body_image_checked);
 					storage.putInt("desired_body_image",
@@ -331,28 +362,27 @@ public class UserInfoUpdate extends Activity {
 		});
 
 	}
+
+	// controls individual photo buttons and photo intents
 	public void onTakeLeftPhotoClicked(View v) {
-		
+
 		startActivityForResult(photo.takeLeftPhoto(), CAMERA_RESULT_LEFT);
 
 	}
 
 	public void onTakeRightPhotoClicked(View v) {
-		
 
 		startActivityForResult(photo.takeRightPhoto(), CAMERA_RESULT_RIGHT);
 
 	}
 
 	public void onTakeFacePhotoClicked(View v) {
-		
 
 		startActivityForResult(photo.takeFacePhoto(), CAMERA_RESULT_FACE);
 
 	}
 
 	public void onTakeBellyPhotoClicked(View v) {
-		
 
 		startActivityForResult(photo.takeBellyPhoto(), CAMERA_RESULT_BELLY);
 
@@ -364,121 +394,144 @@ public class UserInfoUpdate extends Activity {
 
 	}
 
+	// controls movement to next activity
 	private void nextActivity() {
 
-		
-			Intent userStatus = new Intent(this, UserStatus.class);
-			startActivity(userStatus);
-		
+		Intent userStatus = new Intent(this, UserStatus.class);
+		startActivity(userStatus);
 
 	}
 
-
+	// handles result from intent for result
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == CAMERA_RESULT_LEFT) {
+			if (myBitmap != null) {
+				myBitmap.recycle();
+				myBitmap = null;
+				System.gc();
+			}
 			// converts the returned image into a bitmap
-				Bitmap myBitmap = photo.handleLeftPhoto();
+			myBitmap = photo.handleLeftPhoto();
 
-				leftSideImage.setImageBitmap(myBitmap);
-				// encode the bitmap for database transmission
-				left_Image = ImageConversion.encodeToBase64Image(myBitmap);
+			leftSideImage.setImageBitmap(myBitmap);
+			// encode the bitmap for database transmission
+			left_Image = ImageConversion.encodeToBase64Image(myBitmap);
 
-				leftSideInfo = (TextView) findViewById(R.id.leftSidePhotoInstructions);
-				leftSideInfo.setVisibility(View.GONE);
+			leftSideInfo = (TextView) findViewById(R.id.leftSidePhotoInstructions);
+			leftSideInfo.setVisibility(View.GONE);
 
-				nextButton.setEnabled(true);
-			
+			nextButton.setEnabled(true);
+
 		}
 		if (requestCode == CAMERA_RESULT_RIGHT) {
-			
-				
-			Bitmap myBitmap = photo.handleRightPhoto();
+			if (myBitmap != null) {
+				myBitmap.recycle();
+				myBitmap = null;
+				System.gc();
+			}
 
-				rightSideImage.setImageBitmap(myBitmap);
-				// encode the bitmap for database transmission
-				right_Image = ImageConversion.encodeToBase64Image(myBitmap);
+			myBitmap = photo.handleRightPhoto();
 
-				rightSideInfo = (TextView) findViewById(R.id.rightSidePhotoInstructions);
-				rightSideInfo.setVisibility(View.GONE);
+			rightSideImage.setImageBitmap(myBitmap);
+			// encode the bitmap for database transmission
+			right_Image = ImageConversion.encodeToBase64Image(myBitmap);
 
-				nextButton.setEnabled(true);
-			
+			rightSideInfo = (TextView) findViewById(R.id.rightSidePhotoInstructions);
+			rightSideInfo.setVisibility(View.GONE);
+
+			nextButton.setEnabled(true);
 
 		}
 		if (requestCode == CAMERA_RESULT_FACE) {
-				Bitmap myBitmap = photo.handleFacePhoto();
+			if (myBitmap != null) {
+				myBitmap.recycle();
+				myBitmap = null;
+				System.gc();
+			}
+			myBitmap = photo.handleFacePhoto();
 
-				faceImage.setImageBitmap(myBitmap);
-				// encode the bitmap for database transmission
-				face_Image = ImageConversion.encodeToBase64Image(myBitmap);
+			faceImage.setImageBitmap(myBitmap);
+			// encode the bitmap for database transmission
+			face_Image = ImageConversion.encodeToBase64Image(myBitmap);
 
-				faceInfo = (TextView) findViewById(R.id.facePhotoInstructions);
-				faceInfo.setVisibility(View.GONE);
+			faceInfo = (TextView) findViewById(R.id.facePhotoInstructions);
+			faceInfo.setVisibility(View.GONE);
 
-				nextButton.setEnabled(true);
-			
+			nextButton.setEnabled(true);
 
 		}
 		if (requestCode == CAMERA_RESULT_BELLY) {
-				Bitmap myBitmap = photo.handleBellyPhoto();
+			if (myBitmap != null) {
+				myBitmap.recycle();
+				myBitmap = null;
+				System.gc();
+			}
+			myBitmap = photo.handleBellyPhoto();
 
-				bellyImage.setImageBitmap(myBitmap);
-				// encode the bitmap for database transmission
-				belly_Image = ImageConversion.encodeToBase64Image(myBitmap);
+			bellyImage.setImageBitmap(myBitmap);
+			// encode the bitmap for database transmission
+			belly_Image = ImageConversion.encodeToBase64Image(myBitmap);
 
-				bellyInfo = (TextView) findViewById(R.id.bellyPhotoInstructions);
-				bellyInfo.setVisibility(View.GONE);
+			bellyInfo = (TextView) findViewById(R.id.bellyPhotoInstructions);
+			bellyInfo.setVisibility(View.GONE);
 
-				nextButton.setEnabled(true);
-			
+			nextButton.setEnabled(true);
 
 		}
 		if (requestCode == CAMERA_RESULT_OTHER) {
-				Bitmap myBitmap = photo.handleOtherPhoto();
+			if (myBitmap != null) {
+				myBitmap.recycle();
+				myBitmap = null;
+				System.gc();
+			}
+			myBitmap = photo.handleOtherPhoto();
 
-				otherImage.setImageBitmap(myBitmap);
-				// encode the bitmap for database transmission
-				other_Image = ImageConversion.encodeToBase64Image(myBitmap);
+			otherImage.setImageBitmap(myBitmap);
+			// encode the bitmap for database transmission
+			other_Image = ImageConversion.encodeToBase64Image(myBitmap);
 
-				otherInfo = (TextView) findViewById(R.id.otherPhotoInstructions);
-				otherInfo.setVisibility(View.GONE);
+			otherInfo = (TextView) findViewById(R.id.otherPhotoInstructions);
+			otherInfo.setVisibility(View.GONE);
 
-				nextButton.setEnabled(true);
-			
+			nextButton.setEnabled(true);
 
 		}
 	}
 
+	// handles sending of photos to server
 	public void sendPhotos() {
-		photo.sendPhotos(left_Image, right_Image, face_Image, belly_Image, other_Image, null);
+		photo.sendPhotos(left_Image, right_Image, face_Image, belly_Image,
+				other_Image, null);
 	}
 
-	public void checkForNext(){
-		if (currentWeightEntered){
+	// handles validation of input to ensure all fields are filled out
+	public void checkForNext() {
+		if (currentWeightEntered) {
 			currentWeight.setError(null);
-		}else{
+		} else {
 			currentWeight.setError("Required");
 		}
-		if(desiredWeightEntered){
+		if (desiredWeightEntered) {
 			desiredWeight.setError(null);
-		}else{
+		} else {
 			desiredWeight.setError("Required");
 		}
-		if(currentChecked){
+		if (currentChecked) {
 			current_image_5.setError(null);
-		}else{
+		} else {
 			current_image_5.setError("Required");
 		}
-		if(desiredChecked){
+		if (desiredChecked) {
 			desired_image_5.setError(null);
-		}else{
+		} else {
 			desired_image_5.setError("Required");
 		}
-		if (currentWeightEntered && desiredWeightEntered && currentChecked && desiredChecked){
+		if (currentWeightEntered && desiredWeightEntered && currentChecked
+				&& desiredChecked) {
 			nextButton.setEnabled(true);
-			
+
 		}
 	}
 }
