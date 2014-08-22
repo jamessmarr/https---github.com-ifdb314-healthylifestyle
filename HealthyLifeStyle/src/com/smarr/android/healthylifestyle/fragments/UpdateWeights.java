@@ -37,14 +37,16 @@ public class UpdateWeights extends Fragment {
 	private EditText current_weight, desired_weight;
 
 	private StoreAppInfo storage;
-	
+
 	private int weightCounter;
-	
-	private String lastWeightUpdate;
-	
+
+	private String lastWeightUpdate, todayWeight;
+
 	private DateFormatsAndInfo dateInfo = new DateFormatsAndInfo();
-	
-	private DateTime date;
+
+	private DateTime today, lastWeight;
+
+	private boolean recordWeight;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,18 +56,11 @@ public class UpdateWeights extends Fragment {
 				false);
 
 		storage = new StoreAppInfo(getActivity());
-		
-		date = new DateTime();
-		
 		weightCounter = storage.getInt("weightCounter", 1);
-		
-		lastWeightUpdate = storage.getString("lastWeightUpdate", "");
-		
-		
-		
-		
-		
-		//edittext for curent weight entry
+
+		checkLastWeightUpdate();
+
+		// edittext for curent weight entry
 		current_weight = (EditText) v.findViewById(R.id.currentWeightUpdate);
 		current_weight.addTextChangedListener(new TextWatcher() {
 
@@ -93,7 +88,7 @@ public class UpdateWeights extends Fragment {
 				}
 			}
 		});
-		//edittext for desired weight entry
+		// edittext for desired weight entry
 		desired_weight = (EditText) v.findViewById(R.id.desiredWeightUpdate);
 		desired_weight.addTextChangedListener(new TextWatcher() {
 
@@ -303,28 +298,61 @@ public class UpdateWeights extends Fragment {
 				}
 				if (currentWeightEntered && desiredWeightEntered
 						&& currentChecked && desiredChecked) {
-					lastWeightUpdate = dateInfo.getDateFormat(date);
-					weightCounter++;
-					storage.putInt("weightCounter", weightCounter);
-					storage.putInt("current_Weight"+weightCounter, currentWeight);
-					storage.putInt("desired_Weight", desiredWeight);
-					storage.putString("lastWeightUpdate", lastWeightUpdate);
-					storage.putInt("current_body_image", current_image_checked);
-					storage.putInt("desired_body_image", desired_image_checked);
-					storage.putBoolean("weight_updated", true);
-					// do some kind of post to server
+					if (recordWeight) {
+						lastWeightUpdate = dateInfo.getDateFormat(today);
+						weightCounter = weightCounter +1;
+						storage.putInt("current_Weight" + weightCounter,
+								currentWeight);
+						storage.putInt("weightCounter", weightCounter);
+						storage.putInt("desired_Weight", desiredWeight);
+						storage.putString("lastWeightUpdate", lastWeightUpdate);
+						storage.putInt("current_body_image",
+								current_image_checked);
+						storage.putInt("desired_body_image",
+								desired_image_checked);
+						storage.putBoolean("weight_updated", true);
+						// do some kind of post to server
 
-					// go back to myStatus
-					Toast.makeText(getActivity(), "Info Updated",
-							Toast.LENGTH_SHORT).show();
-					getFragmentManager().popBackStackImmediate();
+						// go back to myStatus
+						Toast.makeText(getActivity(), "Info Updated",
+								Toast.LENGTH_SHORT).show();
+						getFragmentManager().popBackStackImmediate();
+					}else{
+						storage.putInt("desired_Weight", desiredWeight);
+						
+						storage.putInt("current_body_image",
+								current_image_checked);
+						storage.putInt("desired_body_image",
+								desired_image_checked);
+						//Toast.makeText(getActivity(), "Info Updated",Toast.LENGTH_SHORT).show();
+						getFragmentManager().popBackStackImmediate();
 					}
+				}
 
-			
 			}
 		});
 
 		return v;
+	}
+
+	public void checkLastWeightUpdate() {
+		//this allows users to only record their weights once per day 
+		
+		today = new DateTime();
+		todayWeight = dateInfo.getDateFormat(today);
+		lastWeightUpdate = storage.getString("lastWeightUpdate", "");
+		lastWeight = dateInfo.parseDate(lastWeightUpdate);
+		lastWeightUpdate = dateInfo.getDateFormat(lastWeight.plusDays(1));
+		
+		
+		
+		if (todayWeight.equals(lastWeightUpdate)) {
+			recordWeight = true;
+
+		} else {
+			recordWeight = false;
+		}
+
 	}
 
 }

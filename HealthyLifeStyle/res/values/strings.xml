@@ -10,7 +10,7 @@
         <item>Update Weights</item>
         <item>Update Photos</item>
         <item>Notifications</item>
-        <item></item>
+        <item>Review</item>
         <item></item>
     </string-array>
 
@@ -21,7 +21,7 @@
         <item>@drawable/ic_people</item>
         <item>@drawable/ic_photos</item>
         <item>@drawable/ic_communities</item>
-        <item></item>
+        <item>@drawable/ic_home</item>
         <item></item>
     </array>
 

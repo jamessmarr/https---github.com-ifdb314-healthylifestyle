@@ -76,11 +76,9 @@ public class MyStatus extends Fragment {
 		// add data
 		graphView.addSeries(weight);
 		// set view port, start=2, size=40
-		if (data.length < 11) {
-			graphView.setScrollable(false);
-		} else {
+		
 			graphView.setScrollable(true);
-		}
+		
 		// optional - activate scaling / zooming
 
 		LinearLayout layout = (LinearLayout) rootView

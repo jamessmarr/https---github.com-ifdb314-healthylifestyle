@@ -45,6 +45,7 @@ public class UserInfoUpdate extends Activity {
 
 	private TakePhoto photo;
 	private int weightCounter = 0;
+	private int photoCounter = 0;
 
 	private ImageView leftSideImage, rightSideImage, faceImage, bellyImage,
 			otherImage;
@@ -336,6 +337,7 @@ public class UserInfoUpdate extends Activity {
 								current_body_image_checked);
 						storage.putInt("desired_body_image",
 								desired_body_image_checked);
+						storePhotosForReview();
 						Toast.makeText(getApplicationContext(),
 								"Camera not detected", Toast.LENGTH_SHORT)
 								.show();
@@ -354,6 +356,7 @@ public class UserInfoUpdate extends Activity {
 							current_body_image_checked);
 					storage.putInt("desired_body_image",
 							desired_body_image_checked);
+					storePhotosForReview();
 					sendPhotos();
 					nextActivity();
 				}
@@ -533,5 +536,14 @@ public class UserInfoUpdate extends Activity {
 			nextButton.setEnabled(true);
 
 		}
+	}
+	
+	public void storePhotosForReview(){
+		storage.putString("leftSide"+photoCounter, photo.getFileLeft().getAbsolutePath());
+		storage.putString("rightSide"+photoCounter, photo.getFileRight().getAbsolutePath());
+		storage.putString("faceImage"+photoCounter, photo.getFileFace().getAbsolutePath());
+		storage.putString("bellyImage"+photoCounter, photo.getFileBelly().getAbsolutePath());
+		storage.putString("otherImage"+photoCounter, photo.getFileOther().getAbsolutePath());
+		storage.putInt("photoCounter", photoCounter);
 	}
 }

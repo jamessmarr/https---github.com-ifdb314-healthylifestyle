@@ -26,6 +26,7 @@ import com.smarr.android.healthylifestyle.R;
 import com.smarr.android.healthylifestyle.fragments.MyStatus;
 import com.smarr.android.healthylifestyle.fragments.Notifications;
 import com.smarr.android.healthylifestyle.fragments.PhotosFragment;
+import com.smarr.android.healthylifestyle.fragments.Review;
 import com.smarr.android.healthylifestyle.fragments.UpdateWeights;
 import com.smarr.android.healthylifestyle.misc_class.DateFormatsAndInfo;
 import com.smarr.android.healthylifestyle.slidingmenu.NavDrawerItem;
@@ -95,19 +96,21 @@ public class UserStatus extends Activity {
 		navDrawerItems = new ArrayList<NavDrawerItem>();
 
 		// adding nav drawer items to array
-		// Home
+		// MyStatus
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons
 				.getResourceId(0, -1)));
-		// Find People
+		// Weight
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons
 				.getResourceId(1, -1)));
 		// Photos
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons
 				.getResourceId(2, -1)));
-		// Communities, Will add a counter here
+		// Notifications, Will add a counter here
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons
 				.getResourceId(3, -1), true, "" + notifications));
-
+		// Review,
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons
+						.getResourceId(4, -1)));
 		// Recycle the typed array
 		navMenuIcons.recycle();
 
@@ -210,6 +213,9 @@ public class UserStatus extends Activity {
 			break;
 		case 3:
 			fragment = new Notifications();
+			break;
+		case 4:
+			fragment = new Review();
 			break;
 		default:
 			break;

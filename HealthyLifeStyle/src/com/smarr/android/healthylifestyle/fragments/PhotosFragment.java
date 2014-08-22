@@ -42,6 +42,10 @@ public class PhotosFragment extends Fragment {
 	private String left_Image, right_Image, face_Image, belly_Image,
 			other_Image;
 
+	private int photoCounter;
+	
+	private boolean storeNew;
+	
 	private TextView leftSideInfo, rightSideInfo, faceInfo, bellyInfo,
 			otherInfo;
 	
@@ -70,6 +74,7 @@ public class PhotosFragment extends Fragment {
 		rootView = inflater.inflate(R.layout.fragment_photos, container, false);
 
 		storage = new StoreAppInfo(getActivity());
+		photoCounter = storage.getInt("photoCounter", 0);
 		//sets date for today
 		today = new DateTime();
 		//converts today to string
@@ -78,8 +83,10 @@ public class PhotosFragment extends Fragment {
 		nextPhoto = storage.getString("nextPhotoDay", "");
 		//converts next photo date into a useable date
 		nextPhotoDate = dateInfo.parseDate(nextPhoto);
-		if(today.equals(nextPhotoDate)){
+		//if todays date equals 2 weeks since last photo
+		if(todayString == nextPhoto){
 			//configures day difference since last photo for folder creation
+			storeNew = true;
 			lastPhoto = storage.getString("lastPhoto", "");
 			lastPhotoDate = dateInfo.parseDate(lastPhoto);
 			lastPhotoDayOfYear = lastPhotoDate.getDayOfYear();
@@ -100,9 +107,11 @@ public class PhotosFragment extends Fragment {
 			//if the last photo was 2 weeks ago makes the last folder name be this one
 			storage.putString("lastFolderName", folderName);
 			storage.putString("nextPhotoDay", nextPhoto);
-		}else{
+			
+		}else {//else store photos in an extras folder
 			//if last photo was less than 2 weeks ago makes a new folder with "extras" added to the last folder name and allows user to take more photos if desired
 			photo = new TakePhoto(getActivity(), storage.getString("lastFolderName", "")+" Extras", todayString);
+			storeNew = false;
 		}
 		
 		
@@ -138,6 +147,9 @@ public class PhotosFragment extends Fragment {
 							belly_Image, other_Image, null);
 					
 					//stores misc info for photo dates
+					if(storeNew){
+						storePhotosForReview();
+					}
 					storage.putString("lastPhoto", todayString);
 					storage.putString("nextPhotoDay", nextPhoto);
 
@@ -305,5 +317,21 @@ public class PhotosFragment extends Fragment {
 
 		}
 	}
+	
+	
+	public void storePhotosForReview(){
+		//stores a new photo with the counter increased everytime the 2 week marker comes up
+		//this ensures I only store the strings for the photos taken every 2 weeks;
+		
+		photoCounter++;
+		
+		storage.putString("leftSide"+photoCounter, photo.getFileLeft().getAbsolutePath());
+		storage.putString("rightSide"+photoCounter, photo.getFileRight().getAbsolutePath());
+		storage.putString("faceImage"+photoCounter, photo.getFileFace().getAbsolutePath());
+		storage.putString("bellyImage"+photoCounter, photo.getFileBelly().getAbsolutePath());
+		storage.putString("otherImage"+photoCounter, photo.getFileOther().getAbsolutePath());
+		storage.putInt("photoCounter", photoCounter);
+	}
+	
 
 }
